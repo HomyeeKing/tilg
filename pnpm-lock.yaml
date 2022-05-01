@@ -2,8 +2,9 @@ lockfileVersion: 5.3
 
 specifiers:
   '@types/node': ^17.0.23
-  '@types/react': ^18.0.0
+  '@types/rax': ^1.0.8
   '@types/react-test-renderer': ^17.0.1
+  rax: ^1.2.2
   react: ^18.0.0
   react-test-renderer: ^18.0.0
   tsup: ^5.12.4
@@ -12,8 +13,9 @@ specifiers:
 
 devDependencies:
   '@types/node': 17.0.23
-  '@types/react': 18.0.0
+  '@types/rax': 1.0.8
   '@types/react-test-renderer': 17.0.1
+  rax: 1.2.2
   react: 18.0.0
   react-test-renderer: 18.0.0_react@18.0.0
   tsup: 5.12.4_typescript@4.6.3
@@ -21,6 +23,13 @@ devDependencies:
   vitest: 0.9.2
 
 packages:
+
+  /@babel/runtime/7.17.9:
+    resolution: {integrity: sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.13.9
+    dev: true
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -59,6 +68,13 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: true
+
+  /@types/rax/1.0.8:
+    resolution: {integrity: sha512-spTfZ6p1XYVurfimLpNIA+MBUaQ1dXAk2fNcvgxRVGF36uvGsx/Y8d3ikG9WNfFOdxkN/XIzvPtfqd1a3HotLQ==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      csstype: 3.0.11
     dev: true
 
   /@types/react-test-renderer/17.0.1:
@@ -216,6 +232,10 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       path-type: 4.0.0
+    dev: true
+
+  /driver-server/1.0.0:
+    resolution: {integrity: sha512-H5nhMzsSJYaug+PDPyXiVW2KvK5k7B7K+yVW3FuHESq494Soh1cfomquJ2pk5RiApQr1z0e+0tif11TVRlM+PQ==}
     dev: true
 
   /esbuild-android-64/0.14.34:
@@ -766,8 +786,66 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
+  /prop-types/15.8.1:
+    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react-is: 16.13.1
+    dev: true
+
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+    dev: true
+
+  /rax-children/1.0.0_rax@1.2.2:
+    resolution: {integrity: sha512-sBKEXAMj9ik6SsPfPGgcQnqggmbWFyBdvAV/Cz/0f04bRA86BtWgbMri/9Dce0k8nkEC/BGWiiTdyA8Q49zIiw==}
+    engines: {npm: '>=3.0.0'}
+    peerDependencies:
+      rax: ^1.0.0
+    dependencies:
+      rax: 1.2.2
+    dev: true
+
+  /rax-clone-element/1.0.0_rax@1.2.2:
+    resolution: {integrity: sha512-TaQMVuzoglvCTjbWATlvvwARmeWnG8kpENWNXrNDv0++x29GHNND/TBbx7sdtVs/QmYwYc8YmwRUhaBwKQi5eQ==}
+    engines: {npm: '>=3.0.0'}
+    peerDependencies:
+      rax: ^1.0.0
+    dependencies:
+      rax: 1.2.2
+      rax-is-valid-element: 1.0.0
+    dev: true
+
+  /rax-create-factory/1.0.0_rax@1.2.2:
+    resolution: {integrity: sha512-blBaVrurj/BOWelJhQWiuc0Kk8Ons1jsNsX78omaPBLkSOL7OkyJ3NC/0iKXHu425yWrGB6e5vho/qabROC7VQ==}
+    engines: {npm: '>=3.0.0'}
+    peerDependencies:
+      rax: ^1.0.0
+    dependencies:
+      rax: 1.2.2
+    dev: true
+
+  /rax-is-valid-element/1.0.0:
+    resolution: {integrity: sha512-MM3IUAQRKn3EJ0D2vjxgobOJLplLAw3YxE7/IRM6ytDYzlPq5iIZ8wsXoPAp/qW3Y+n23HLQUIljmLKywcCEIA==}
+    engines: {npm: '>=3.0.0'}
+    dev: true
+
+  /rax/1.2.2:
+    resolution: {integrity: sha512-SKUKSXoG2Dp+sFyiFyYzTGmhZlYGxusRSigcokAYTN3r4WTySreXs2WE+6nBBGg26aFyiCsBVHNeI86SQbVsQg==}
+    engines: {npm: '>=3.0.0'}
+    dependencies:
+      '@babel/runtime': 7.17.9
+      driver-server: 1.0.0
+      prop-types: 15.8.1
+      rax-children: 1.0.0_rax@1.2.2
+      rax-clone-element: 1.0.0_rax@1.2.2
+      rax-create-factory: 1.0.0_rax@1.2.2
+      rax-is-valid-element: 1.0.0
+    dev: true
+
+  /react-is/16.13.1:
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
 
   /react-is/18.0.0:
@@ -807,6 +885,10 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
+
+  /regenerator-runtime/0.13.9:
+    resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
     dev: true
 
   /resolve-from/5.0.0:
