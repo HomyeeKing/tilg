@@ -279,7 +279,7 @@ function useTilgCurrentComponentContext() {
 }
 
 export default function useTilg(...inlined: any[]) {
-  const mark = useState(Math.random())[0];
+  const [mark] = useState(Math.random());
   const [name, owner, id, hookPath, logPath] = useTilgCurrentComponentContext();
 
   const compute = () => {
@@ -353,10 +353,8 @@ export default function useTilg(...inlined: any[]) {
   }, []);
 
   const loggerEffectContent = useRef(null);
-  loggerEffectContent.current = null;
   const loggerPrevArgsContent = useRef(null);
   const loggerArgsContent = useRef([]);
-  loggerArgsContent.current = [];
 
   useLayoutEffect(() => {
     const [componentName, hookId, instanceId] = compute();

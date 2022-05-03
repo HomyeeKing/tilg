@@ -1,5 +1,5 @@
 import React from 'react'
-import { act, create } from 'react-test-renderer'
+import { act, create } from 'rax-test-renderer'
 import { describe, expect, it } from 'vitest'
 
 import { spyConsole } from './utils'
