@@ -1,5 +1,7 @@
-import Rax, { useState, useEffect, useLayoutEffect, useRef } from 'rax';
+// @ts-nocheck
+import Rax, { useState, useEffect, useLayoutEffect, useRef, shared } from 'rax';
 
+const { Instance } = shared;
 function inIframe() {
   try {
     return window.self !== window.top;
@@ -19,7 +21,7 @@ const IS_UNSUPPORTED_CONSOLE =
  * This function is a `console.log` formatter with a subset of Markdown syntax
  * support, for both browser and CLI:
  */
-const SEPARATOR = /[-–—!$%^&*()_+|~=`{}\[\]:\/\\"'“”‘’;<>?,.@#\s\n\t\r]$/;
+const SEPARATOR = /[-–—!$%^&*()_+|~=`{}[\]:/\\"'“”‘’;<>?,.@#\s\n\t\r]$/;
 function md(strings, args = [], hints = {}, trace = '') {
   const disableStyling =
     IS_UNSUPPORTED_CONSOLE &&
@@ -27,7 +29,7 @@ function md(strings, args = [], hints = {}, trace = '') {
       return typeof arg === 'function' || (arg && typeof arg === 'object');
     });
 
-  let tokens: Record<string, boolean> = {};
+  const tokens: Record<string, boolean> = {};
   let formatted = '';
   let char = '';
 
@@ -37,7 +39,7 @@ function md(strings, args = [], hints = {}, trace = '') {
   function setStylesAndFormatted(
     type: string,
     value: string,
-    tokenType: boolean
+    tokenType: boolean,
   ) {
     if (!disableStyling) {
       if (IS_BROWSER) {
@@ -64,7 +66,7 @@ function md(strings, args = [], hints = {}, trace = '') {
     open: string,
     close: string,
     next?: string | undefined,
-    prev?: string | undefined
+    prev?: string | undefined,
   ) {
     if (tokens[type] && checkNextOrPrev(next)) {
       setStylesAndFormatted(type, close, false);
@@ -77,7 +79,7 @@ function md(strings, args = [], hints = {}, trace = '') {
 
   for (let i = 0; i < strings.length; i++) {
     formatted = '';
-    let prev = undefined;
+    let prev;
     const str = strings[i];
 
     for (let j = 0; j < str.length; j++) {
@@ -91,7 +93,7 @@ function md(strings, args = [], hints = {}, trace = '') {
             IS_BROWSER ? 'font-weight: bold;' : '\u001B[1m',
             IS_BROWSER ? 'font-weight: normal;' : '\u001B[22m',
             str[j + 1],
-            prev
+            prev,
           );
         } else {
           process(
@@ -99,7 +101,7 @@ function md(strings, args = [], hints = {}, trace = '') {
             IS_BROWSER ? 'font-style: italic;' : '\u001B[3m',
             IS_BROWSER ? 'font-style: normal;' : '\u001B[23m',
             str[j + 1],
-            prev
+            prev,
           );
         }
       } else if (char === '_') {
@@ -110,7 +112,7 @@ function md(strings, args = [], hints = {}, trace = '') {
             IS_BROWSER ? 'font-weight: bold;' : '\u001B[1m',
             IS_BROWSER ? 'font-weight: normal;' : '\u001B[22m',
             str[j + 1],
-            prev
+            prev,
           );
         } else {
           process(
@@ -118,7 +120,7 @@ function md(strings, args = [], hints = {}, trace = '') {
             IS_BROWSER ? 'font-style: italic;' : '\u001B[3m',
             IS_BROWSER ? 'font-style: normal;' : '\u001B[23m',
             str[j + 1],
-            prev
+            prev,
           );
         }
       } else if (char === '`') {
@@ -129,7 +131,7 @@ function md(strings, args = [], hints = {}, trace = '') {
             : '\u001B[96m\u001B[1m',
           IS_BROWSER ? 'background: unset;' : '\u001B[39m\u001B[22m',
           str[j + 1],
-          prev
+          prev,
         );
       }
 
@@ -168,7 +170,7 @@ function md(strings, args = [], hints = {}, trace = '') {
           IS_BROWSER
             ? 'text-decoration: underline; text-decoration-color: green; text-decoration-style: wavy; padding-bottom: 1px; text-decoration-skip-ink: none;'
             : '',
-          ''
+          '',
         );
       }
 
@@ -192,7 +194,7 @@ function md(strings, args = [], hints = {}, trace = '') {
           try {
             serailized = JSON.stringify(args[i]);
           } catch (e) {
-            serailized = '' + args[i];
+            serailized = `${args[i]}`;
           }
           result[result.length - 1] += serailized;
         }
@@ -203,7 +205,7 @@ function md(strings, args = [], hints = {}, trace = '') {
         process(
           '~',
           IS_BROWSER ? 'text-decoration: none; padding-bottom: 0;' : '',
-          ''
+          '',
         );
         result[result.length - 1] += formatted;
       }
@@ -218,7 +220,7 @@ function md(strings, args = [], hints = {}, trace = '') {
       if (IS_BROWSER) {
         result[result.length - 1] += `%c(@ ${trace})`;
         styles.push(
-          'color: #999; font-style: italic; font-size: 0.9em; padding-left: 2em;'
+          'color: #999; font-style: italic; font-size: 0.9em; padding-left: 2em;',
         );
       } else {
         result[result.length - 1] += `  \u001B[2m(@ ${trace})\u001B[22m`;
@@ -242,15 +244,6 @@ function log(...args) {
 const components = new WeakMap();
 const instances = new Map();
 function useTilgCurrentComponentContext() {
-  const owner = (Rax as any)?.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-    .ReactCurrentOwner?.current || {
-    type: { name: 'unknown' },
-    memoizedProps: undefined,
-  };
-
-  const name = owner.type.name;
-  const id = owner.type;
-
   let path = '';
   let logPath = '';
 
@@ -260,7 +253,7 @@ function useTilgCurrentComponentContext() {
     const callerName = match?.[1];
     const callerPath = match?.[2];
 
-    if (callerPath) path += callerPath + ',';
+    if (callerPath) path += `${callerPath},`;
 
     if (callerName && !callerName.startsWith('useTilg')) {
       logPath = match[2];
@@ -275,35 +268,33 @@ function useTilgCurrentComponentContext() {
     }
   }
 
-  return [name, owner, id, path, logPath];
+  return [path, logPath];
 }
 
-export default function useTilg(...inlined: any[]) {
+export default function useTilg(componentName = 'Component', props: any, ...inlined: any[]) {
+  // every component is distributed an unique mark
   const [mark] = useState(Math.random());
-  const [name, owner, id, hookPath, logPath] = useTilgCurrentComponentContext();
+  const name = `\`<${componentName}/>\``;
+  const [hookPath, logPath] = useTilgCurrentComponentContext();
 
+  // in case one component maybe called multiple times, so once it's called, do increment
   const compute = () => {
     let hookId = 0;
 
-    if (!components.has(id)) {
-      components.set(id, []);
+    if (!components.has(mark)) {
+      components.set(mark, []);
     }
-    const hooks = components.get(id);
+    // the times of this component called by the parent
+    const called = components.get(mark);
     hookId = hooks.indexOf(hookPath);
     if (hookId === -1) {
       hookId = hooks.length;
       hooks.push(hookPath);
     }
 
-    let componentName = name;
-    if (name) {
-      componentName = '`<' + name + '/>`';
-    } else {
-      componentName = 'Component';
-    }
 
     // Only log the life cycle message for the first hook.
-    if (hookId !== 0) return [componentName, hookId, 0];
+    if (hookId !== 0) return [hookId, 0];
 
     // Which component instance is this hook located in.
     if (!instances.has(id)) {
@@ -316,17 +307,17 @@ export default function useTilg(...inlined: any[]) {
       instanceMarks.push(mark);
     }
 
-    return [componentName, hookId, index];
+    return [hookId, index];
   };
 
   useEffect(() => {
-    const [componentName, hookId, instanceId] = compute();
+    // const [hookId, instanceId] = compute();
 
     // Only log the life cycle message for the first hook.
-    if (hookId !== 0) return;
-    const note = instanceId > 0 ? ` (${instanceId + 1})` : '';
+    // if (hookId !== 0) return;
+    // const note = instanceId > 0 ? ` (${instanceId + 1})` : '';
 
-    log(...md([`${componentName}${note} mounted.`]));
+    log(...md([`${name} mounted.`]));
     return () => {
       if (!instances.has(id)) {
         instances.set(id, []);
@@ -357,21 +348,21 @@ export default function useTilg(...inlined: any[]) {
   const loggerArgsContent = useRef([]);
 
   useLayoutEffect(() => {
-    const [componentName, hookId, instanceId] = compute();
+    // const [hookId, instanceId] = compute();
 
     // Only log the life cycle message for the first hook.
-    if (hookId === 0) {
-      const note = instanceId > 0 ? ` (${instanceId + 1})` : '';
-      log(
-        ...md(
-          [`${componentName}${note} rendered with props: \``, '`.'],
-          [owner.memoizedProps]
-        )
-      );
-    }
+    // if (hookId === 0) {
+    // const note = instanceId > 0 ? ` (${instanceId + 1})` : '';
+    log(
+      ...md(
+        [`${componentName} rendered with props: \``, '`.'],
+        [props],
+      ),
+    );
+    // }
 
     let changed = false;
-    let changedHint = {};
+    const changedHint = {};
 
     const prev = loggerPrevArgsContent.current;
     const now = loggerArgsContent.current;
@@ -400,7 +391,7 @@ export default function useTilg(...inlined: any[]) {
         inlined.map((_, i) => (i > 0 ? ', ' : '')).concat(''),
         inlined,
         hints,
-        logPath
+        logPath,
       );
 
       log(...message);
